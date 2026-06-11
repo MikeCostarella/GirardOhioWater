@@ -26,7 +26,7 @@ export default function WaterMap({ locations, onSelect, onMapReady }: WaterMapPr
       center={MAP_CENTER}
       zoom={MAP_ZOOM}
       zoomControl={true}
-      style={{ flex: 1, width: "100%", height: "100%" }}
+      style={{ width: "100%", height: "100%" }}
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

@@ -5,6 +5,7 @@ import { loadLocations, countAccounts } from "./data/loadLocations";
 import { findLocation } from "./data/search";
 import WaterMap, { MAP_CENTER, MAP_ZOOM } from "./components/WaterMap";
 import AccountDialog from "./components/AccountDialog";
+import Legend from "./components/Legend";
 
 /**
  * Phase 3 in progress. Base map + markers + click dialog + search are live;
@@ -93,11 +94,14 @@ export default function App() {
         {noResult && <span className="search-msg">No accounts found matching: {query}</span>}
       </div>
 
-      <WaterMap
-        locations={locations ?? []}
-        onSelect={setSelected}
-        onMapReady={onMapReady}
-      />
+      <div id="map-wrap">
+        <WaterMap
+          locations={locations ?? []}
+          onSelect={setSelected}
+          onMapReady={onMapReady}
+        />
+        <Legend />
+      </div>
 
       <AccountDialog location={selected} onClose={() => setSelected(null)} />
     </>
