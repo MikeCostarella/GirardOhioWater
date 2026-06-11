@@ -1,0 +1,43 @@
+import type { WaterLocation } from "../types/account";
+
+/**
+ * The single data seam for the app. Everything consumes WaterLocation[] from
+ * here; this is the only place that knows the data is a static JSON file. To
+ * swap in a real backend later, change only this function.
+ *
+ * The JSON ships in public/data and is fetched at runtime (it is ~1.4 MB, so
+ * we deliberately keep it out of the JS bundle).
+ */
+export async function loadLocations(): Promise<WaterLocation[]> {
+  // import.meta.env.BASE_URL resolves to the Vite `base` ("/GirardOhioWater/"),
+  // so the fetch path is correct on GitHub Pages and in local dev alike.
+  const url = `${import.meta.env.BASE_URL}data/locations.json`;
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Failed to load locations (${res.status} ${res.statusText})`);
+  }
+
+  const raw = (await res.json()) as WaterLocation[];
+
+  // The source data is already typed correctly (booleans/enums not needed here),
+  // so normalization is light: guard the shape and coerce coordinates to numbers.
+  if (!Array.isArray(raw)) {
+    throw new Error("locations.json did not contain an array");
+  }
+
+  return raw.map((loc) => ({
+    lat: Number(loc.lat),
+    lon: Number(loc.lon),
+    accounts: loc.accounts.map((a) => ({
+      ...a,
+      lat: Number(a.lat),
+      lon: Number(a.lon),
+    })),
+  }));
+}
+
+/** Total number of individual accounts across all locations. */
+export function countAccounts(locations: WaterLocation[]): number {
+  return locations.reduce((sum, loc) => sum + loc.accounts.length, 0);
+}
