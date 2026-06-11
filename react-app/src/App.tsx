@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import type { WaterLocation } from "./types/account";
 import { loadLocations, countAccounts } from "./data/loadLocations";
+import WaterMap from "./components/WaterMap";
 
 /**
- * Phase 1 shell. This deliberately renders almost nothing beyond proof that the
- * data seam works and the app compiles + deploys. Feature porting (map, markers,
- * dialog, search, legend) happens in Phase 3, one commit per slice.
+ * Phase 3 in progress. Base map is live; markers, tooltips, dialog, search,
+ * and legend land in subsequent slices (one commit each).
  */
 export default function App() {
   const [locations, setLocations] = useState<WaterLocation[] | null>(null);
@@ -17,31 +17,35 @@ export default function App() {
       .catch((e: unknown) => setError(e instanceof Error ? e.message : String(e)));
   }, []);
 
-  return (
-    <div style={{ padding: "2rem" }}>
-      <h1 style={{ color: "var(--text-accent)", fontSize: "1.4em", letterSpacing: 1 }}>
-        &#128204; Girard Ohio Water Accounts Map
-      </h1>
-      <p style={{ color: "var(--text-muted)", fontSize: "0.8em", marginTop: 4 }}>
-        Interactive mapping of municipal water service accounts
-      </p>
+  const locCount = locations?.length ?? 0;
+  const acctCount = locations ? countAccounts(locations) : 0;
 
-      <div style={{ marginTop: "1.5rem", color: "var(--text-muted-2)", fontSize: "0.9em" }}>
-        {error && <span style={{ color: "#F44336" }}>Error: {error}</span>}
-        {!error && !locations && <span>Loading account data&hellip;</span>}
-        {locations && (
-          <span>
-            Loaded <b style={{ color: "var(--text-accent)" }}>
-              {locations.length.toLocaleString()}
-            </b>{" "}
-            locations /{" "}
-            <b style={{ color: "var(--text-accent)" }}>
-              {countAccounts(locations).toLocaleString()}
-            </b>{" "}
-            accounts. Map UI lands in Phase 3.
-          </span>
-        )}
+  return (
+    <>
+      <div id="header">
+        <div className="title-block">
+          <h1>&#128204; Girard Ohio Water Accounts Map</h1>
+          <p>Interactive mapping of municipal water service accounts</p>
+        </div>
+        <div className="meta">
+          <span>Created by:</span> Mike Costarella
+        </div>
       </div>
-    </div>
+
+      <div id="stats-bar">
+        <div className="stat">
+          {error ? (
+            <span style={{ color: "#F44336" }}>Error: {error}</span>
+          ) : (
+            <>
+              Total Locations: <b>{locCount.toLocaleString()}</b> &nbsp;|&nbsp; Total
+              Accounts: <b>{acctCount.toLocaleString()}</b>
+            </>
+          )}
+        </div>
+      </div>
+
+      <WaterMap />
+    </>
   );
 }
