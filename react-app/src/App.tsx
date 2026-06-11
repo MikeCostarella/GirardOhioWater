@@ -4,8 +4,8 @@ import { loadLocations, countAccounts } from "./data/loadLocations";
 import WaterMap from "./components/WaterMap";
 
 /**
- * Phase 3 in progress. Base map is live; markers, tooltips, dialog, search,
- * and legend land in subsequent slices (one commit each).
+ * Phase 3 in progress. Base map + account markers are live; click dialog,
+ * search, and legend land in subsequent slices (one commit each).
  */
 export default function App() {
   const [locations, setLocations] = useState<WaterLocation[] | null>(null);
@@ -45,7 +45,7 @@ export default function App() {
         </div>
       </div>
 
-      <WaterMap />
+      <WaterMap locations={locations ?? []} />
     </>
   );
 }
