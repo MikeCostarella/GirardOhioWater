@@ -156,3 +156,42 @@ body {
 }
 .leaflet-tooltip-left::before { border-left-color: var(--border-accent) !important; }
 .leaflet-tooltip-right::before { border-right-color: var(--border-accent) !important; }
+
+/* --- Search bar, ported from prototype --- */
+#search-bar {
+  background: var(--bg-search);
+  border-bottom: 1px solid var(--border-stats);
+  padding: 8px 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
+#search-bar input {
+  flex: 1;
+  max-width: 360px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-accent);
+  background: var(--bg-input);
+  color: var(--text-main);
+  font-size: 0.85em;
+  outline: none;
+}
+#search-bar input:focus {
+  border-color: var(--border-accent-bright);
+  box-shadow: 0 0 6px rgba(91, 196, 245, 0.3);
+}
+#search-bar button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  background: var(--btn-primary);
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.82em;
+  transition: background 0.2s;
+}
+#search-bar button:hover { background: var(--btn-primary-hover); }
+#search-bar button.clear { background: var(--btn-clear); }
+#search-bar .search-msg { font-size: 0.78em; color: #F44336; margin-left: 4px; }

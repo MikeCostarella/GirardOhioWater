@@ -1,22 +1,48 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { Map as LeafletMap } from "leaflet";
 import type { WaterLocation } from "./types/account";
 import { loadLocations, countAccounts } from "./data/loadLocations";
-import WaterMap from "./components/WaterMap";
+import { findLocation } from "./data/search";
+import WaterMap, { MAP_CENTER, MAP_ZOOM } from "./components/WaterMap";
 import AccountDialog from "./components/AccountDialog";
 
 /**
- * Phase 3 in progress. Base map + markers + click dialog are live;
- * search and legend land in subsequent slices (one commit each).
+ * Phase 3 in progress. Base map + markers + click dialog + search are live;
+ * the legend lands in the next slice.
  */
 export default function App() {
   const [locations, setLocations] = useState<WaterLocation[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<WaterLocation | null>(null);
+  const [query, setQuery] = useState("");
+  const [noResult, setNoResult] = useState(false);
+  const mapRef = useRef<LeafletMap | null>(null);
 
   useEffect(() => {
     loadLocations()
       .then(setLocations)
       .catch((e: unknown) => setError(e instanceof Error ? e.message : String(e)));
+  }, []);
+
+  const onMapReady = useCallback((map: LeafletMap) => {
+    mapRef.current = map;
+  }, []);
+
+  const doSearch = useCallback(() => {
+    setNoResult(false);
+    const found = findLocation(locations ?? [], query);
+    if (found && mapRef.current) {
+      mapRef.current.flyTo([found.lat, found.lon], 17, { animate: true, duration: 1 });
+      window.setTimeout(() => setSelected(found), 800);
+    } else if (query.trim()) {
+      setNoResult(true);
+    }
+  }, [locations, query]);
+
+  const clearSearch = useCallback(() => {
+    setQuery("");
+    setNoResult(false);
+    mapRef.current?.flyTo(MAP_CENTER, MAP_ZOOM, { animate: true });
   }, []);
 
   const locCount = locations?.length ?? 0;
@@ -47,7 +73,31 @@ export default function App() {
         </div>
       </div>
 
-      <WaterMap locations={locations ?? []} onSelect={setSelected} />
+      <div id="search-bar">
+        <input
+          type="text"
+          value={query}
+          placeholder="Search by account # or address..."
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setNoResult(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") doSearch();
+          }}
+        />
+        <button onClick={doSearch}>&#128269; Search</button>
+        <button className="clear" onClick={clearSearch}>
+          Clear
+        </button>
+        {noResult && <span className="search-msg">No accounts found matching: {query}</span>}
+      </div>
+
+      <WaterMap
+        locations={locations ?? []}
+        onSelect={setSelected}
+        onMapReady={onMapReady}
+      />
 
       <AccountDialog location={selected} onClose={() => setSelected(null)} />
     </>

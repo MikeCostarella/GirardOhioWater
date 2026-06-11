@@ -1,6 +1,8 @@
 import { MapContainer, TileLayer } from "react-leaflet";
+import type { Map as LeafletMap } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { InvalidateSize } from "../hooks/useInvalidateSize";
+import { MapController } from "../hooks/useMapController";
 import AccountMarkers from "./AccountMarkers";
 import type { WaterLocation } from "../types/account";
 
@@ -11,13 +13,14 @@ export const MAP_ZOOM = 13;
 interface WaterMapProps {
   locations: WaterLocation[];
   onSelect?: (loc: WaterLocation) => void;
+  onMapReady?: (map: LeafletMap) => void;
 }
 
 /**
- * The base map plus account-density markers. Dialog/search/legend attach in
- * later Phase 3 slices. Center/zoom/tile URL/attribution match the prototype.
+ * Base map + account-density markers. Exposes the Leaflet instance via
+ * onMapReady so search can flyTo. Center/zoom/tiles match the prototype.
  */
-export default function WaterMap({ locations, onSelect }: WaterMapProps) {
+export default function WaterMap({ locations, onSelect, onMapReady }: WaterMapProps) {
   return (
     <MapContainer
       center={MAP_CENTER}
@@ -32,6 +35,7 @@ export default function WaterMap({ locations, onSelect }: WaterMapProps) {
       />
       <AccountMarkers locations={locations} onSelect={onSelect} />
       <InvalidateSize />
+      {onMapReady && <MapController onReady={onMapReady} />}
     </MapContainer>
   );
 }
