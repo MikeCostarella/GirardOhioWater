@@ -1,22 +1,34 @@
 import { CircleMarker, Tooltip } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import type { WaterLocation } from "../types/account";
+import { HOME_JURISDICTION } from "../types/account";
 import { colorForCount, radiusForCount } from "../data/markerStyle";
 import { tooltipHtml } from "../data/tooltip";
 
 interface AccountMarkersProps {
   locations?: WaterLocation[];
-  /** Called when a marker is clicked (wired to the detail dialog). */
   onSelect?: (loc: WaterLocation) => void;
+  /** When true, only render locations outside the home jurisdiction. */
+  outOfCityOnly?: boolean;
+}
+
+function isOutside(loc: WaterLocation): boolean {
+  return !!loc.jurisdiction && loc.jurisdiction !== HOME_JURISDICTION;
 }
 
 /**
- * One CircleMarker per location, colored + sized by account count, grouped
- * into a MarkerClusterGroup so the ~5.5k points collapse into count badges
- * that split apart as you zoom in. Ported from the prototype's circle loop;
- * clustering is the one deliberate enhancement over the original.
+ * One CircleMarker per location, colored + sized by account count, grouped into
+ * a MarkerClusterGroup. Out-of-city locations (Girard serving beyond its
+ * limits) get a distinct magenta ring so they stand out; an optional filter
+ * shows only those.
  */
-export default function AccountMarkers({ locations = [], onSelect }: AccountMarkersProps) {
+export default function AccountMarkers({
+  locations = [],
+  onSelect,
+  outOfCityOnly = false,
+}: AccountMarkersProps) {
+  const shown = outOfCityOnly ? locations.filter(isOutside) : locations;
+
   return (
     <MarkerClusterGroup
       chunkedLoading
@@ -25,8 +37,9 @@ export default function AccountMarkers({ locations = [], onSelect }: AccountMark
       showCoverageOnHover={false}
       disableClusteringAtZoom={17}
     >
-      {locations.map((loc, i) => {
+      {shown.map((loc, i) => {
         const count = loc.accounts.length;
+        const outside = isOutside(loc);
         return (
           <CircleMarker
             key={`${loc.lat},${loc.lon},${i}`}
@@ -34,8 +47,9 @@ export default function AccountMarkers({ locations = [], onSelect }: AccountMark
             radius={radiusForCount(count)}
             pathOptions={{
               fillColor: colorForCount(count),
-              color: "rgba(255,255,255,0.6)",
-              weight: 1.5,
+              // Out-of-city markers get a bright magenta ring vs. the usual white.
+              color: outside ? "#E040FB" : "rgba(255,255,255,0.6)",
+              weight: outside ? 2.5 : 1.5,
               opacity: 1,
               fillOpacity: 0.85,
             }}

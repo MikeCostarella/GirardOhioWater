@@ -31,4 +31,14 @@ export interface WaterLocation {
   lat: number;
   lon: number;
   accounts: WaterAccount[];
+  /**
+   * Jurisdiction the location physically sits in (e.g. "Girard",
+   * "Liberty Township", "Youngstown"), assigned at build time by
+   * scripts/assign-jurisdictions.mjs via point-in-polygon. May be undefined
+   * if the assignment script hasn't been run.
+   */
+  jurisdiction?: string;
 }
+
+/** The home jurisdiction; accounts outside it are Girard serving beyond its limits. */
+export const HOME_JURISDICTION = "Girard";

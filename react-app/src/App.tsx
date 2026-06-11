@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Map as LeafletMap } from "leaflet";
 import type { WaterLocation } from "./types/account";
-import { loadLocations, countAccounts } from "./data/loadLocations";
+import { HOME_JURISDICTION } from "./types/account";
+import {
+  loadLocations,
+  countAccounts,
+  countOutsideAccounts,
+} from "./data/loadLocations";
 import { findLocation } from "./data/search";
 import WaterMap, { MAP_CENTER, MAP_ZOOM } from "./components/WaterMap";
 import AccountDialog from "./components/AccountDialog";
@@ -22,6 +27,7 @@ export default function App() {
     municipalities: false,
     townships: false,
   });
+  const [outOfCityOnly, setOutOfCityOnly] = useState(false);
   const mapRef = useRef<LeafletMap | null>(null);
 
   useEffect(() => {
@@ -57,6 +63,10 @@ export default function App() {
 
   const locCount = locations?.length ?? 0;
   const acctCount = locations ? countAccounts(locations) : 0;
+  const outsideCount = locations
+    ? countOutsideAccounts(locations, HOME_JURISDICTION)
+    : 0;
+  const hasJurisdictions = !!locations?.some((l) => l.jurisdiction);
 
   return (
     <>
@@ -78,6 +88,15 @@ export default function App() {
             <>
               Total Locations: <b>{locCount.toLocaleString()}</b> &nbsp;|&nbsp; Total
               Accounts: <b>{acctCount.toLocaleString()}</b>
+              {hasJurisdictions && (
+                <>
+                  {" "}
+                  &nbsp;|&nbsp; Outside Girard limits:{" "}
+                  <b style={{ color: "#E040FB" }}>
+                    {outsideCount.toLocaleString()}
+                  </b>
+                </>
+              )}
             </>
           )}
         </div>
@@ -101,6 +120,16 @@ export default function App() {
           Clear
         </button>
         {noResult && <span className="search-msg">No accounts found matching: {query}</span>}
+        {hasJurisdictions && (
+          <label className="outcity-toggle">
+            <input
+              type="checkbox"
+              checked={outOfCityOnly}
+              onChange={() => setOutOfCityOnly((v) => !v)}
+            />
+            Show only outside Girard limits
+          </label>
+        )}
       </div>
 
       <div id="map-wrap">
@@ -109,6 +138,7 @@ export default function App() {
           onSelect={setSelected}
           onMapReady={onMapReady}
           boundaryVisible={boundaryVisible}
+          outOfCityOnly={outOfCityOnly}
         />
         <Legend boundaryVisible={boundaryVisible} onToggleBoundary={toggleBoundary} />
       </div>

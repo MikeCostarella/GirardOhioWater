@@ -331,3 +331,25 @@ body {
 .leaflet-pane.leaflet-boundaries-pane path {
   filter: drop-shadow(0 0 1.5px rgba(0, 0, 0, 0.55));
 }
+
+/* --- Jurisdiction surfacing (out-of-city accounts) --- */
+.dialog-jurisdiction {
+  padding: 8px 18px;
+  font-size: 0.82em;
+  color: var(--text-card);
+  border-bottom: 1px solid var(--border-card);
+}
+.dialog-jurisdiction.outside { color: #E040FB; }
+.dialog-jurisdiction b { color: inherit; }
+
+.outcity-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78em;
+  color: var(--text-muted-2);
+  cursor: pointer;
+  user-select: none;
+  margin-left: 6px;
+}
+.outcity-toggle input { cursor: pointer; margin: 0; }

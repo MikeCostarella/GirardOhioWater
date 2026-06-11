@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import type { WaterLocation } from "../types/account";
+import { HOME_JURISDICTION } from "../types/account";
 
 interface AccountDialogProps {
   /** The selected location, or null when the dialog is closed. */
@@ -31,6 +32,8 @@ export default function AccountDialog({ location, onClose }: AccountDialogProps)
   const accts = location.accounts;
   const title =
     accts.length === 1 ? "Account Details" : `${accts.length} Accounts at this Location`;
+  const outside =
+    location.jurisdiction && location.jurisdiction !== HOME_JURISDICTION;
 
   return (
     <div
@@ -47,6 +50,13 @@ export default function AccountDialog({ location, onClose }: AccountDialogProps)
             &#x2715;
           </button>
         </div>
+        {location.jurisdiction && (
+          <div className={`dialog-jurisdiction${outside ? " outside" : ""}`}>
+            {outside ? "⚑ " : ""}
+            Jurisdiction: <b>{location.jurisdiction}</b>
+            {outside ? " (outside Girard city limits)" : ""}
+          </div>
+        )}
         <div id="dialog-body">
           {accts.map((a) => {
             const gmapQ = encodeURIComponent(

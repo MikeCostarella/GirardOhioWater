@@ -29,6 +29,7 @@ export async function loadLocations(): Promise<WaterLocation[]> {
   return raw.map((loc) => ({
     lat: Number(loc.lat),
     lon: Number(loc.lon),
+    jurisdiction: loc.jurisdiction,
     accounts: loc.accounts.map((a) => ({
       ...a,
       lat: Number(a.lat),
@@ -40,4 +41,22 @@ export async function loadLocations(): Promise<WaterLocation[]> {
 /** Total number of individual accounts across all locations. */
 export function countAccounts(locations: WaterLocation[]): number {
   return locations.reduce((sum, loc) => sum + loc.accounts.length, 0);
+}
+
+/**
+ * Count of accounts whose location is OUTSIDE the home jurisdiction (Girard) —
+ * i.e. Girard water service extended beyond city limits. Locations without a
+ * jurisdiction (script not yet run) are not counted as outside.
+ */
+export function countOutsideAccounts(
+  locations: WaterLocation[],
+  home: string,
+): number {
+  return locations.reduce(
+    (sum, loc) =>
+      loc.jurisdiction && loc.jurisdiction !== home
+        ? sum + loc.accounts.length
+        : sum,
+    0,
+  );
 }
