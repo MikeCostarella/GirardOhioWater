@@ -6,6 +6,7 @@ import { findLocation } from "./data/search";
 import WaterMap, { MAP_CENTER, MAP_ZOOM } from "./components/WaterMap";
 import AccountDialog from "./components/AccountDialog";
 import Legend from "./components/Legend";
+import BuildStamp from "./components/BuildStamp";
 
 /**
  * Phase 3 in progress. Base map + markers + click dialog + search are live;
@@ -104,6 +105,8 @@ export default function App() {
       </div>
 
       <AccountDialog location={selected} onClose={() => setSelected(null)} />
+
+      <BuildStamp />
     </>
   );
 }

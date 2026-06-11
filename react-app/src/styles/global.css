@@ -13,6 +13,8 @@ body {
 #root {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* --- App chrome (header + stats), ported from prototype --- */
@@ -236,3 +238,17 @@ body {
 
 /* Wrapper that holds the map and absolutely-positioned legend overlay. */
 #map-wrap { flex: 1; position: relative; min-height: 0; }
+
+/* --- Footer / build stamp --- */
+#footer {
+  background: var(--bg-stats);
+  border-top: 1px solid var(--border-stats);
+  padding: 4px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7em;
+  color: var(--text-muted-2);
+  flex-shrink: 0;
+}
+#footer #build-time { color: var(--text-muted); }
