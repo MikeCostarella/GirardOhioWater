@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { CircleMarker, Tooltip } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import type { WaterLocation } from "../types/account";
@@ -19,10 +20,14 @@ function isOutside(loc: WaterLocation): boolean {
 /**
  * One CircleMarker per location, colored + sized by account count, grouped into
  * a MarkerClusterGroup. Out-of-city locations (Girard serving beyond its
- * limits) get a distinct magenta ring so they stand out; an optional filter
- * shows only those.
+ * limits) get a distinct magenta ring; an optional filter shows only those.
+ *
+ * Wrapped in React.memo: rebuilding ~5,568 markers + the cluster tree is
+ * expensive, so this must NOT re-render when unrelated app state (e.g. the
+ * selected-location dialog) changes. It re-renders only when locations or the
+ * out-of-city filter change. (onSelect is a stable useState setter.)
  */
-export default function AccountMarkers({
+function AccountMarkers({
   locations = [],
   onSelect,
   outOfCityOnly = false,
@@ -47,7 +52,6 @@ export default function AccountMarkers({
             radius={radiusForCount(count)}
             pathOptions={{
               fillColor: colorForCount(count),
-              // Out-of-city markers get a bright magenta ring vs. the usual white.
               color: outside ? "#E040FB" : "rgba(255,255,255,0.6)",
               weight: outside ? 2.5 : 1.5,
               opacity: 1,
@@ -64,3 +68,5 @@ export default function AccountMarkers({
     </MarkerClusterGroup>
   );
 }
+
+export default memo(AccountMarkers);
