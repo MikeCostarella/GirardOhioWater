@@ -1,22 +1,30 @@
 import { CircleMarker, Tooltip } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import type { WaterLocation } from "../types/account";
 import { colorForCount, radiusForCount } from "../data/markerStyle";
 import { tooltipHtml } from "../data/tooltip";
 
 interface AccountMarkersProps {
-  locations: WaterLocation[];
-  /** Called when a marker is clicked (wired to the detail dialog in a later slice). */
+  locations?: WaterLocation[];
+  /** Called when a marker is clicked (wired to the detail dialog). */
   onSelect?: (loc: WaterLocation) => void;
 }
 
 /**
- * One CircleMarker per location, colored + sized by account count.
- * Ported from the prototype's LOCATIONS.forEach(...) circle loop. Tooltips are
- * sticky (follow the cursor) like the original.
+ * One CircleMarker per location, colored + sized by account count, grouped
+ * into a MarkerClusterGroup so the ~5.5k points collapse into count badges
+ * that split apart as you zoom in. Ported from the prototype's circle loop;
+ * clustering is the one deliberate enhancement over the original.
  */
 export default function AccountMarkers({ locations = [], onSelect }: AccountMarkersProps) {
   return (
-    <>
+    <MarkerClusterGroup
+      chunkedLoading
+      maxClusterRadius={50}
+      spiderfyOnMaxZoom
+      showCoverageOnHover={false}
+      disableClusteringAtZoom={17}
+    >
       {locations.map((loc, i) => {
         const count = loc.accounts.length;
         return (
@@ -39,6 +47,6 @@ export default function AccountMarkers({ locations = [], onSelect }: AccountMark
           </CircleMarker>
         );
       })}
-    </>
+    </MarkerClusterGroup>
   );
 }
