@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { DENSITY_LEGEND } from "../data/markerStyle";
+import { BOUNDARY_LAYERS } from "../data/boundaries";
+
+interface LegendProps {
+  boundaryVisible: { municipalities: boolean; townships: boolean };
+  onToggleBoundary: (id: "municipalities" | "townships") => void;
+}
 
 /**
- * Bottom-right "Account Density" key explaining the marker colors.
- * Collapsible via the header toggle, like the prototype. Renders from
- * DENSITY_LEGEND so the swatches always match the marker ramp.
+ * Bottom-right key. Shows the "Account Density" color ramp plus a "Boundaries"
+ * section with toggles for the municipal and township outlines. Collapsible.
  */
-export default function Legend() {
+export default function Legend({ boundaryVisible, onToggleBoundary }: LegendProps) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -22,6 +27,25 @@ export default function Legend() {
               <span className="legend-dot" style={{ background: row.color }} />
               {row.label}
             </div>
+          ))}
+
+          <div className="legend-subhead">Boundaries</div>
+          {BOUNDARY_LAYERS.map((def) => (
+            <label className="legend-toggle-row" key={def.id}>
+              <input
+                type="checkbox"
+                checked={boundaryVisible[def.id]}
+                onChange={() => onToggleBoundary(def.id)}
+              />
+              <span
+                className="legend-line"
+                style={{
+                  borderTopColor: def.color,
+                  borderTopStyle: def.dashArray ? "dashed" : "solid",
+                }}
+              />
+              {def.label}
+            </label>
           ))}
         </div>
       )}

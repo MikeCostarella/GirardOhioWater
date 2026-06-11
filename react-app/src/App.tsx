@@ -18,6 +18,10 @@ export default function App() {
   const [selected, setSelected] = useState<WaterLocation | null>(null);
   const [query, setQuery] = useState("");
   const [noResult, setNoResult] = useState(false);
+  const [boundaryVisible, setBoundaryVisible] = useState({
+    municipalities: false,
+    townships: false,
+  });
   const mapRef = useRef<LeafletMap | null>(null);
 
   useEffect(() => {
@@ -45,6 +49,10 @@ export default function App() {
     setQuery("");
     setNoResult(false);
     mapRef.current?.flyTo(MAP_CENTER, MAP_ZOOM, { animate: true });
+  }, []);
+
+  const toggleBoundary = useCallback((id: "municipalities" | "townships") => {
+    setBoundaryVisible((v) => ({ ...v, [id]: !v[id] }));
   }, []);
 
   const locCount = locations?.length ?? 0;
@@ -100,8 +108,9 @@ export default function App() {
           locations={locations ?? []}
           onSelect={setSelected}
           onMapReady={onMapReady}
+          boundaryVisible={boundaryVisible}
         />
-        <Legend />
+        <Legend boundaryVisible={boundaryVisible} onToggleBoundary={toggleBoundary} />
       </div>
 
       <AccountDialog location={selected} onClose={() => setSelected(null)} />

@@ -4,6 +4,8 @@ import "leaflet/dist/leaflet.css";
 import { InvalidateSize } from "../hooks/useInvalidateSize";
 import { MapController } from "../hooks/useMapController";
 import AccountMarkers from "./AccountMarkers";
+import GeolocationControl from "./GeolocationControl";
+import BoundaryLayers from "./BoundaryLayers";
 import type { WaterLocation } from "../types/account";
 
 // Map defaults ported verbatim from the prototype's L.map(...) init.
@@ -14,13 +16,20 @@ interface WaterMapProps {
   locations: WaterLocation[];
   onSelect?: (loc: WaterLocation) => void;
   onMapReady?: (map: LeafletMap) => void;
+  boundaryVisible: { municipalities: boolean; townships: boolean };
 }
 
 /**
- * Base map + account-density markers. Exposes the Leaflet instance via
- * onMapReady so search can flyTo. Center/zoom/tiles match the prototype.
+ * Base map + account markers + geolocation + boundary outlines. Exposes the
+ * Leaflet instance via onMapReady so search can flyTo. Center/zoom/tiles match
+ * the prototype.
  */
-export default function WaterMap({ locations, onSelect, onMapReady }: WaterMapProps) {
+export default function WaterMap({
+  locations,
+  onSelect,
+  onMapReady,
+  boundaryVisible,
+}: WaterMapProps) {
   return (
     <MapContainer
       center={MAP_CENTER}
@@ -33,7 +42,9 @@ export default function WaterMap({ locations, onSelect, onMapReady }: WaterMapPr
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         maxZoom={19}
       />
+      <BoundaryLayers visible={boundaryVisible} />
       <AccountMarkers locations={locations} onSelect={onSelect} />
+      <GeolocationControl />
       <InvalidateSize />
       {onMapReady && <MapController onReady={onMapReady} />}
     </MapContainer>

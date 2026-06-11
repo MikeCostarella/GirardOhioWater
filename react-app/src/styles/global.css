@@ -252,3 +252,82 @@ body {
   flex-shrink: 0;
 }
 #footer #build-time { color: var(--text-muted); }
+
+/* --- Geolocation "you are here" marker + locate button --- */
+.user-loc-icon { background: transparent; border: none; }
+.user-loc-dot {
+  position: absolute;
+  top: 5px; left: 5px;
+  width: 10px; height: 10px;
+  background: #5bc4f5;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+}
+.user-loc-pulse {
+  position: absolute;
+  top: 0; left: 0;
+  width: 20px; height: 20px;
+  background: rgba(91, 196, 245, 0.4);
+  border-radius: 50%;
+  animation: userLocPulse 1.8s ease-out infinite;
+}
+@keyframes userLocPulse {
+  0%   { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.leaflet-tooltip.user-loc-tip {
+  font-weight: 600;
+  color: var(--text-accent) !important;
+}
+
+#locate-btn {
+  position: absolute;
+  bottom: 22px; left: 12px;
+  z-index: 1000;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border-accent);
+  background: var(--bg-legend);
+  color: var(--text-accent);
+  font-size: 1.3em;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+#locate-btn:hover { background: rgba(46, 125, 190, 0.4); }
+
+/* --- Legend boundaries section --- */
+.legend-subhead {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-stats);
+  color: var(--text-accent);
+  font-weight: 600;
+  font-size: 0.95em;
+}
+.legend-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 0;
+  cursor: pointer;
+  user-select: none;
+}
+.legend-toggle-row input { cursor: pointer; margin: 0; }
+.legend-line {
+  display: inline-block;
+  width: 18px;
+  height: 0;
+  border-top-width: 2.5px;
+  flex-shrink: 0;
+}
+
+/* Lift boundary outlines off the busy basemap with a subtle dark halo. */
+.leaflet-pane.leaflet-boundaries-pane path {
+  filter: drop-shadow(0 0 1.5px rgba(0, 0, 0, 0.55));
+}
