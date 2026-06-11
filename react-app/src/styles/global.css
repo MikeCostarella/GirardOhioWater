@@ -59,3 +59,100 @@ body {
 #stats-bar .stat b { color: var(--text-accent); }
 
 #map { flex: 1; }
+
+/* --- Detail dialog, ported from prototype (parcel button omitted) --- */
+#dialog-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+#dialog-overlay.active { display: flex; }
+
+#dialog {
+  background: linear-gradient(160deg, var(--bg-dialog-1) 0%, var(--bg-dialog-2) 100%);
+  border: 1px solid var(--border-accent);
+  border-radius: 12px;
+  width: 420px;
+  max-width: 95vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7), 0 0 20px rgba(46, 125, 190, 0.2);
+  animation: dialogIn 0.2s ease;
+}
+@keyframes dialogIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+#dialog-header {
+  background: linear-gradient(135deg, var(--bg-dialog-header-1), var(--bg-dialog-header-2));
+  border-bottom: 1px solid var(--border-accent);
+  border-radius: 12px 12px 0 0;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#dialog-header h2 { font-size: 1em; color: var(--text-accent); }
+#dialog-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.4em;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+#dialog-close:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+#dialog-body { padding: 18px; }
+
+.acct-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.acct-card:last-child { margin-bottom: 0; }
+.acct-num { font-size: 1em; font-weight: bold; color: var(--text-accent); margin-bottom: 6px; }
+.acct-row { font-size: 0.82em; color: var(--text-card); margin: 3px 0; display: flex; gap: 8px; }
+.acct-row .label { color: var(--text-card-label); min-width: 80px; flex-shrink: 0; }
+
+.btn-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.map-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 6px;
+  font-size: 0.75em;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.btn-gmap { background: var(--btn-gmap); color: #fff; }
+.btn-gmap:hover { background: var(--btn-gmap-hover); }
+.btn-dir { background: var(--btn-dir); color: #fff; }
+.btn-dir:hover { background: var(--btn-dir-hover); }
+
+/* Leaflet tooltip override (ported from prototype) */
+.leaflet-tooltip {
+  background: var(--bg-tooltip) !important;
+  border: 1px solid var(--border-accent) !important;
+  color: #cde !important;
+  border-radius: 6px !important;
+  font-size: 0.8em !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+  padding: 6px 10px !important;
+}
+.leaflet-tooltip-left::before { border-left-color: var(--border-accent) !important; }
+.leaflet-tooltip-right::before { border-right-color: var(--border-accent) !important; }

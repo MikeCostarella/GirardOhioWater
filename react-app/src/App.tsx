@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import type { WaterLocation } from "./types/account";
 import { loadLocations, countAccounts } from "./data/loadLocations";
 import WaterMap from "./components/WaterMap";
+import AccountDialog from "./components/AccountDialog";
 
 /**
- * Phase 3 in progress. Base map + account markers are live; click dialog,
- * search, and legend land in subsequent slices (one commit each).
+ * Phase 3 in progress. Base map + markers + click dialog are live;
+ * search and legend land in subsequent slices (one commit each).
  */
 export default function App() {
   const [locations, setLocations] = useState<WaterLocation[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selected, setSelected] = useState<WaterLocation | null>(null);
 
   useEffect(() => {
     loadLocations()
@@ -45,7 +47,9 @@ export default function App() {
         </div>
       </div>
 
-      <WaterMap locations={locations ?? []} />
+      <WaterMap locations={locations ?? []} onSelect={setSelected} />
+
+      <AccountDialog location={selected} onClose={() => setSelected(null)} />
     </>
   );
 }
