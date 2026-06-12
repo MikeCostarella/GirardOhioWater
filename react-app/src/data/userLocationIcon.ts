@@ -7,6 +7,6 @@ import L from "leaflet";
 export const userLocationIcon = L.divIcon({
   className: "user-loc-icon",
   html: '<div class="user-loc-pulse"></div><div class="user-loc-dot"></div>',
-  iconSize: [20, 20],
-  iconAnchor: [10, 10],
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
 });

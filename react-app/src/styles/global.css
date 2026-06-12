@@ -257,17 +257,17 @@ body {
 .user-loc-icon { background: transparent; border: none; }
 .user-loc-dot {
   position: absolute;
-  top: 5px; left: 5px;
-  width: 10px; height: 10px;
+  top: 7px; left: 7px;
+  width: 18px; height: 18px;
   background: #5bc4f5;
-  border: 2px solid #fff;
+  border: 3px solid #fff;
   border-radius: 50%;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
 }
 .user-loc-pulse {
   position: absolute;
   top: 0; left: 0;
-  width: 20px; height: 20px;
+  width: 32px; height: 32px;
   background: rgba(91, 196, 245, 0.4);
   border-radius: 50%;
   animation: userLocPulse 1.8s ease-out infinite;
@@ -277,8 +277,10 @@ body {
   100% { transform: scale(2.2); opacity: 0; }
 }
 .leaflet-tooltip.user-loc-tip {
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.15em;
   color: var(--text-accent) !important;
+  padding: 7px 12px !important;
 }
 
 #locate-btn {

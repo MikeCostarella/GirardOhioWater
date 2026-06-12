@@ -90,7 +90,7 @@ export default function GeolocationControl() {
           ref={markerRef}
           eventHandlers={{ click: openDetail }}
         >
-          <Tooltip permanent direction="top" offset={[0, -12]} className="user-loc-tip">
+          <Tooltip permanent direction="top" offset={[0, -16]} className="user-loc-tip">
             You are here
             {acc != null && <> ({Math.round(acc)} m)</>}
           </Tooltip>
