@@ -59,6 +59,12 @@ body {
 }
 #stats-bar .stat { display: flex; align-items: center; gap: 6px; }
 #stats-bar .stat b { color: var(--text-accent); }
+/* Pipe divider before each stat except the first (replaces the old inline |). */
+#stats-bar .stat + .stat::before {
+  content: "|";
+  color: var(--border-stats);
+  margin-right: 14px;
+}
 
 #map { flex: 1; }
 
@@ -459,8 +465,12 @@ body {
     padding: 5px 12px;
     font-size: 0.7em;
   }
-  /* The stats are one long inline run with nbsp separators; let it wrap. */
-  #stats-bar .stat { flex-wrap: wrap; }
+  /* Each .stat is a flex unit; its label + number never split. Wrapping
+     happens between stats at the #stats-bar level. */
+  #stats-bar .stat { white-space: nowrap; }
+  /* Drop the pipe dividers on mobile — wrapped stats shouldn't show a leading
+     "|"; the row gap separates them instead. */
+  #stats-bar .stat + .stat::before { content: none; }
 
   /* Search bar: wrap controls onto multiple rows */
   #search-bar {

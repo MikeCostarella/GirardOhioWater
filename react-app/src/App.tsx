@@ -114,25 +114,28 @@ export default function App() {
       </div>
 
       <div id="stats-bar">
-        <div className="stat">
-          {error ? (
+        {error ? (
+          <div className="stat">
             <span style={{ color: "#F44336" }}>Error: {error}</span>
-          ) : (
-            <>
-              Total Locations: <b>{locCount.toLocaleString()}</b> &nbsp;|&nbsp; Total
-              Accounts: <b>{acctCount.toLocaleString()}</b>
-              {hasJurisdictions && (
-                <>
-                  {" "}
-                  &nbsp;|&nbsp; Outside Girard limits:{" "}
-                  <b style={{ color: "#E040FB" }}>
-                    {outsideCount.toLocaleString()}
-                  </b>
-                </>
-              )}
-            </>
-          )}
-        </div>
+          </div>
+        ) : (
+          <>
+            <div className="stat">
+              Total Locations: <b>{locCount.toLocaleString()}</b>
+            </div>
+            <div className="stat">
+              Total Accounts: <b>{acctCount.toLocaleString()}</b>
+            </div>
+            {hasJurisdictions && (
+              <div className="stat">
+                Outside Girard limits:{" "}
+                <b style={{ color: "#E040FB" }}>
+                  {outsideCount.toLocaleString()}
+                </b>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       <div id="search-bar">
