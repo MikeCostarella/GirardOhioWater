@@ -433,3 +433,64 @@ body {
   color: var(--text-muted);
   font-size: 0.82em;
 }
+
+/* ============================================================
+   Mobile / narrow-viewport responsive treatment (<= 640px)
+   The base layout is a set of non-wrapping horizontal flex rows
+   sized for desktop; on phones we let rows wrap, stack the header,
+   and keep dropdown panels inside the viewport.
+   ============================================================ */
+@media (max-width: 640px) {
+  /* Header: stack title over meta, smaller type */
+  #header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 8px 12px;
+  }
+  #header .title-block h1 { font-size: 1.1em; letter-spacing: 0.5px; }
+  #header .title-block p { font-size: 0.7em; }
+  #header .meta { text-align: left; font-size: 0.66em; line-height: 1.4; }
+
+  /* Stats bar: allow wrapping, tighter gaps */
+  #stats-bar {
+    gap: 6px 14px;
+    flex-wrap: wrap;
+    padding: 5px 12px;
+    font-size: 0.7em;
+  }
+  /* The stats are one long inline run with nbsp separators; let it wrap. */
+  #stats-bar .stat { flex-wrap: wrap; }
+
+  /* Search bar: wrap controls onto multiple rows */
+  #search-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+  /* Input takes the full first row; buttons/filters wrap below */
+  #search-bar input {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+  #search-bar button { flex: 0 0 auto; }
+  #search-bar .search-msg { flex: 1 1 100%; margin-left: 0; }
+
+  /* Filter dropdowns: full-width buttons share a row, panels stay on-screen */
+  .jur-filter { margin-left: 0; flex: 1 1 100%; }
+  .jur-filter-btn { width: 100%; }
+  .jur-filter-panel {
+    /* Stay anchored below the button (absolute) but cap width to the viewport
+       so the 274-street panel can't run off the right edge. */
+    left: 0;
+    right: auto;
+    min-width: 0;
+    width: 100%;
+    max-height: 55vh;
+  }
+  .jur-filter-list { max-height: 40vh; }
+
+  /* Legend + locate button: nudge in from edges, cap legend width */
+  #legend { bottom: 14px; right: 8px; max-width: 60vw; }
+  #locate-btn { bottom: 14px; left: 8px; }
+}
