@@ -9,8 +9,11 @@ import { tooltipHtml } from "../data/tooltip";
 interface AccountMarkersProps {
   locations?: WaterLocation[];
   onSelect?: (loc: WaterLocation) => void;
-  /** When true, only render locations outside the home jurisdiction. */
-  outOfCityOnly?: boolean;
+  /**
+   * Set of jurisdiction names to show. If undefined, all locations show
+   * (jurisdiction data not present / filter inactive).
+   */
+  selectedJurisdictions?: Set<string>;
 }
 
 function isOutside(loc: WaterLocation): boolean {
@@ -19,20 +22,24 @@ function isOutside(loc: WaterLocation): boolean {
 
 /**
  * One CircleMarker per location, colored + sized by account count, grouped into
- * a MarkerClusterGroup. Out-of-city locations (Girard serving beyond its
- * limits) get a distinct magenta ring; an optional filter shows only those.
+ * a MarkerClusterGroup. Out-of-city locations get a magenta ring. When a
+ * jurisdiction selection is supplied, only locations in selected jurisdictions
+ * render (a location's bucket is its jurisdiction, or "Unassigned").
  *
  * Wrapped in React.memo: rebuilding ~5,568 markers + the cluster tree is
  * expensive, so this must NOT re-render when unrelated app state (e.g. the
- * selected-location dialog) changes. It re-renders only when locations or the
- * out-of-city filter change. (onSelect is a stable useState setter.)
+ * selected-location dialog) changes.
  */
 function AccountMarkers({
   locations = [],
   onSelect,
-  outOfCityOnly = false,
+  selectedJurisdictions,
 }: AccountMarkersProps) {
-  const shown = outOfCityOnly ? locations.filter(isOutside) : locations;
+  const shown = selectedJurisdictions
+    ? locations.filter((loc) =>
+        selectedJurisdictions.has(loc.jurisdiction ?? "Unassigned"),
+      )
+    : locations;
 
   return (
     <MarkerClusterGroup

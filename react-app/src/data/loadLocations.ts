@@ -60,3 +60,26 @@ export function countOutsideAccounts(
     0,
   );
 }
+
+/**
+ * Distinct jurisdictions present in the data with their LOCATION counts,
+ * sorted by count descending. Drives the jurisdiction filter dropdown.
+ * Locations missing a jurisdiction are bucketed under "Unassigned".
+ */
+export interface JurisdictionCount {
+  name: string;
+  count: number;
+}
+
+export function jurisdictionCounts(
+  locations: WaterLocation[],
+): JurisdictionCount[] {
+  const m = new Map<string, number>();
+  for (const loc of locations) {
+    const j = loc.jurisdiction ?? "Unassigned";
+    m.set(j, (m.get(j) ?? 0) + 1);
+  }
+  return [...m.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+}

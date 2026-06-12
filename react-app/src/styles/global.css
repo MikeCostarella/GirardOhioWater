@@ -355,3 +355,61 @@ body {
   margin-left: 6px;
 }
 .outcity-toggle input { cursor: pointer; margin: 0; }
+
+/* --- Jurisdiction multi-select filter dropdown --- */
+.jur-filter { position: relative; margin-left: 6px; }
+.jur-filter-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-accent);
+  background: var(--bg-input);
+  color: var(--text-main);
+  cursor: pointer;
+  font-size: 0.82em;
+  white-space: nowrap;
+}
+.jur-filter-btn b { color: var(--text-accent); font-weight: 600; }
+.jur-caret { margin-left: 4px; font-size: 0.85em; }
+.jur-filter-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 1500;
+  min-width: 230px;
+  background: var(--bg-legend);
+  border: 1px solid var(--border-accent);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+.jur-filter-actions {
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-stats);
+}
+.jur-filter-actions button {
+  flex: 1;
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: 1px solid var(--border-stats);
+  background: rgba(46, 125, 190, 0.2);
+  color: var(--text-accent);
+  cursor: pointer;
+  font-size: 0.78em;
+}
+.jur-filter-actions button:hover { background: rgba(46, 125, 190, 0.4); }
+.jur-filter-list { max-height: 260px; overflow-y: auto; padding: 6px 0; }
+.jur-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 0.82em;
+  color: var(--text-card);
+}
+.jur-filter-row:hover { background: rgba(255, 255, 255, 0.05); }
+.jur-filter-row input { cursor: pointer; margin: 0; }
+.jur-filter-name { flex: 1; }
+.jur-filter-count { color: var(--text-muted); font-size: 0.9em; }

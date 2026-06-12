@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Map as LeafletMap } from "leaflet";
 import type { WaterLocation } from "./types/account";
 import { HOME_JURISDICTION } from "./types/account";
@@ -6,10 +6,12 @@ import {
   loadLocations,
   countAccounts,
   countOutsideAccounts,
+  jurisdictionCounts,
 } from "./data/loadLocations";
 import { findLocation } from "./data/search";
 import WaterMap, { MAP_CENTER, MAP_ZOOM } from "./components/WaterMap";
 import AccountDialog from "./components/AccountDialog";
+import JurisdictionFilter from "./components/JurisdictionFilter";
 import Legend from "./components/Legend";
 import BuildStamp from "./components/BuildStamp";
 
@@ -27,7 +29,7 @@ export default function App() {
     municipalities: false,
     townships: false,
   });
-  const [outOfCityOnly, setOutOfCityOnly] = useState(false);
+  const [selectedJur, setSelectedJur] = useState<Set<string> | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
 
   useEffect(() => {
@@ -67,6 +69,19 @@ export default function App() {
     ? countOutsideAccounts(locations, HOME_JURISDICTION)
     : 0;
   const hasJurisdictions = !!locations?.some((l) => l.jurisdiction);
+
+  // Jurisdiction list + counts for the filter dropdown (recomputed only on data change).
+  const jurOptions = useMemo(
+    () => (locations ? jurisdictionCounts(locations) : []),
+    [locations],
+  );
+
+  // Default to all jurisdictions selected once data has loaded.
+  useEffect(() => {
+    if (jurOptions.length && selectedJur === null) {
+      setSelectedJur(new Set(jurOptions.map((o) => o.name)));
+    }
+  }, [jurOptions, selectedJur]);
 
   return (
     <>
@@ -120,15 +135,12 @@ export default function App() {
           Clear
         </button>
         {noResult && <span className="search-msg">No accounts found matching: {query}</span>}
-        {hasJurisdictions && (
-          <label className="outcity-toggle">
-            <input
-              type="checkbox"
-              checked={outOfCityOnly}
-              onChange={() => setOutOfCityOnly((v) => !v)}
-            />
-            Show only outside Girard limits
-          </label>
+        {hasJurisdictions && selectedJur && (
+          <JurisdictionFilter
+            options={jurOptions}
+            selected={selectedJur}
+            onChange={setSelectedJur}
+          />
         )}
       </div>
 
@@ -138,7 +150,7 @@ export default function App() {
           onSelect={setSelected}
           onMapReady={onMapReady}
           boundaryVisible={boundaryVisible}
-          outOfCityOnly={outOfCityOnly}
+          selectedJurisdictions={hasJurisdictions ? selectedJur ?? undefined : undefined}
         />
         <Legend boundaryVisible={boundaryVisible} onToggleBoundary={toggleBoundary} />
       </div>
