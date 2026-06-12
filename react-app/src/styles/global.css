@@ -419,8 +419,8 @@ body {
 }
 .jur-filter-row:hover { background: rgba(255, 255, 255, 0.05); }
 .jur-filter-row input { cursor: pointer; margin: 0; }
-.jur-filter-name { flex: 1; }
-.jur-filter-count { color: var(--text-muted); font-size: 0.9em; }
+.jur-filter-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.jur-filter-count { color: var(--text-muted); font-size: 0.9em; flex-shrink: 0; }
 
 /* search box + empty state inside the multi-select filter panel */
 .jur-filter-search {
@@ -495,14 +495,18 @@ body {
   .jur-filter { margin-left: 0; flex: 1 1 100%; }
   .jur-filter-btn { width: 100%; }
   .jur-filter-panel {
-    /* Stay anchored below the button (absolute) but cap width to the viewport
-       so the 274-street panel can't run off the right edge. */
+    /* Anchored below the full-width button. Cap to the viewport so neither the
+       panel box nor its rows can run off the right edge; long street names
+       wrap/truncate via .jur-filter-name (min-width:0). */
     left: 0;
     right: auto;
     min-width: 0;
     width: 100%;
+    max-width: calc(100vw - 24px);
+    box-sizing: border-box;
     max-height: 55vh;
   }
+  .jur-filter-row { box-sizing: border-box; max-width: 100%; }
   .jur-filter-list { max-height: 40vh; }
 
   /* Legend + locate button: nudge in from edges, cap legend width */
