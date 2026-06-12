@@ -12,7 +12,11 @@ interface LegendProps {
  * section with toggles for the municipal and township outlines. Collapsible.
  */
 export default function Legend({ boundaryVisible, onToggleBoundary }: LegendProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  // Start collapsed on phones (same 640px breakpoint as the mobile CSS) so the
+  // legend doesn't cover a large share of the map; open by default on desktop.
+  const [collapsed, setCollapsed] = useState(
+    () => window.matchMedia("(max-width: 640px)").matches,
+  );
 
   return (
     <div id="legend" className={collapsed ? "collapsed" : ""}>
