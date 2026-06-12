@@ -177,7 +177,7 @@ body {
   align-items: center;
   flex-shrink: 0;
 }
-#search-bar input {
+#search-bar > input {
   flex: 1;
   max-width: 360px;
   padding: 6px 12px;
@@ -188,7 +188,7 @@ body {
   font-size: 0.85em;
   outline: none;
 }
-#search-bar input:focus {
+#search-bar > input:focus {
   border-color: var(--border-accent-bright);
   box-shadow: 0 0 6px rgba(91, 196, 245, 0.3);
 }
@@ -383,7 +383,8 @@ body {
   top: calc(100% + 4px);
   left: 0;
   z-index: 1500;
-  min-width: 230px;
+  width: 280px;
+  max-width: calc(100vw - 24px);
   background: var(--bg-legend);
   border: 1px solid var(--border-accent);
   border-radius: 8px;
@@ -490,7 +491,7 @@ body {
     padding: 8px 12px;
   }
   /* Input takes the full first row; buttons/filters wrap below */
-  #search-bar input {
+  #search-bar > input {
     flex: 1 1 100%;
     max-width: none;
   }
