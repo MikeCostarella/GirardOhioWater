@@ -7,11 +7,12 @@ import {
   countAccounts,
   countOutsideAccounts,
   jurisdictionCounts,
+  streetCounts,
 } from "./data/loadLocations";
 import { findLocation } from "./data/search";
 import WaterMap, { MAP_CENTER, MAP_ZOOM } from "./components/WaterMap";
 import AccountDialog from "./components/AccountDialog";
-import JurisdictionFilter from "./components/JurisdictionFilter";
+import MultiSelectFilter from "./components/MultiSelectFilter";
 import Legend from "./components/Legend";
 import BuildStamp from "./components/BuildStamp";
 
@@ -30,6 +31,9 @@ export default function App() {
     townships: false,
   });
   const [selectedJur, setSelectedJur] = useState<Set<string> | null>(null);
+  const [selectedStreets, setSelectedStreets] = useState<Set<string> | null>(
+    null,
+  );
   const mapRef = useRef<LeafletMap | null>(null);
 
   useEffect(() => {
@@ -69,10 +73,17 @@ export default function App() {
     ? countOutsideAccounts(locations, HOME_JURISDICTION)
     : 0;
   const hasJurisdictions = !!locations?.some((l) => l.jurisdiction);
+  const hasStreets = !!locations?.some((l) => l.streetName);
 
   // Jurisdiction list + counts for the filter dropdown (recomputed only on data change).
   const jurOptions = useMemo(
     () => (locations ? jurisdictionCounts(locations) : []),
+    [locations],
+  );
+
+  // Street list + counts for the filter dropdown.
+  const streetOptions = useMemo(
+    () => (locations ? streetCounts(locations) : []),
     [locations],
   );
 
@@ -82,6 +93,13 @@ export default function App() {
       setSelectedJur(new Set(jurOptions.map((o) => o.name)));
     }
   }, [jurOptions, selectedJur]);
+
+  // Default to all streets selected once data has loaded.
+  useEffect(() => {
+    if (streetOptions.length && selectedStreets === null) {
+      setSelectedStreets(new Set(streetOptions.map((o) => o.name)));
+    }
+  }, [streetOptions, selectedStreets]);
 
   return (
     <>
@@ -136,10 +154,22 @@ export default function App() {
         </button>
         {noResult && <span className="search-msg">No accounts found matching: {query}</span>}
         {hasJurisdictions && selectedJur && (
-          <JurisdictionFilter
+          <MultiSelectFilter
+            label="Jurisdiction"
+            noun="jurisdictions"
             options={jurOptions}
             selected={selectedJur}
             onChange={setSelectedJur}
+          />
+        )}
+        {hasStreets && selectedStreets && (
+          <MultiSelectFilter
+            label="Street"
+            noun="streets"
+            options={streetOptions}
+            selected={selectedStreets}
+            onChange={setSelectedStreets}
+            searchable
           />
         )}
       </div>
@@ -151,6 +181,7 @@ export default function App() {
           onMapReady={onMapReady}
           boundaryVisible={boundaryVisible}
           selectedJurisdictions={hasJurisdictions ? selectedJur ?? undefined : undefined}
+          selectedStreets={hasStreets ? selectedStreets ?? undefined : undefined}
         />
         <Legend boundaryVisible={boundaryVisible} onToggleBoundary={toggleBoundary} />
       </div>

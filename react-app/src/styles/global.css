@@ -413,3 +413,23 @@ body {
 .jur-filter-row input { cursor: pointer; margin: 0; }
 .jur-filter-name { flex: 1; }
 .jur-filter-count { color: var(--text-muted); font-size: 0.9em; }
+
+/* search box + empty state inside the multi-select filter panel */
+.jur-filter-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 10px;
+  border: none;
+  border-bottom: 1px solid var(--border-stats);
+  background: var(--bg-input);
+  color: var(--text-main);
+  font-size: 0.82em;
+  outline: none;
+}
+.jur-filter-search::placeholder { color: var(--text-muted); }
+.jur-filter-empty {
+  padding: 12px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.82em;
+}

@@ -21,6 +21,11 @@ export interface WaterAccount {
   status: string;
   /** Prebuilt display label, e.g. "04313-001 (CLARK, ALISSA)". */
   display: string;
+  /**
+   * Canonical street name (no house number) from the source spreadsheet's
+   * StreetName column, assigned at build time by scripts/assign-streets.mjs.
+   */
+  streetName?: string;
 }
 
 /**
@@ -38,6 +43,16 @@ export interface WaterLocation {
    * if the assignment script hasn't been run.
    */
   jurisdiction?: string;
+  /**
+   * Primary (most-common) canonical street name at this location, from the
+   * source spreadsheet via scripts/assign-streets.mjs.
+   */
+  streetName?: string;
+  /**
+   * All distinct street names at this location. Usually one; ~18 corner
+   * locations have two. The street filter matches any of these.
+   */
+  streetNames?: string[];
 }
 
 /** The home jurisdiction; accounts outside it are Girard serving beyond its limits. */

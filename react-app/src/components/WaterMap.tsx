@@ -18,6 +18,7 @@ interface WaterMapProps {
   onMapReady?: (map: LeafletMap) => void;
   boundaryVisible: { municipalities: boolean; townships: boolean };
   selectedJurisdictions?: Set<string>;
+  selectedStreets?: Set<string>;
 }
 
 /**
@@ -31,6 +32,7 @@ export default function WaterMap({
   onMapReady,
   boundaryVisible,
   selectedJurisdictions,
+  selectedStreets,
 }: WaterMapProps) {
   return (
     <MapContainer
@@ -49,6 +51,7 @@ export default function WaterMap({
         locations={locations}
         onSelect={onSelect}
         selectedJurisdictions={selectedJurisdictions}
+        selectedStreets={selectedStreets}
       />
       <GeolocationControl />
       <InvalidateSize />

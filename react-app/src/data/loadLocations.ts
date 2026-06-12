@@ -30,6 +30,8 @@ export async function loadLocations(): Promise<WaterLocation[]> {
     lat: Number(loc.lat),
     lon: Number(loc.lon),
     jurisdiction: loc.jurisdiction,
+    streetName: loc.streetName,
+    streetNames: loc.streetNames,
     accounts: loc.accounts.map((a) => ({
       ...a,
       lat: Number(a.lat),
@@ -66,14 +68,17 @@ export function countOutsideAccounts(
  * sorted by count descending. Drives the jurisdiction filter dropdown.
  * Locations missing a jurisdiction are bucketed under "Unassigned".
  */
-export interface JurisdictionCount {
+export interface NamedCount {
   name: string;
   count: number;
 }
 
+/** @deprecated alias kept for existing imports; use NamedCount. */
+export type JurisdictionCount = NamedCount;
+
 export function jurisdictionCounts(
   locations: WaterLocation[],
-): JurisdictionCount[] {
+): NamedCount[] {
   const m = new Map<string, number>();
   for (const loc of locations) {
     const j = loc.jurisdiction ?? "Unassigned";
@@ -82,4 +87,27 @@ export function jurisdictionCounts(
   return [...m.entries()]
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count);
+}
+
+/**
+ * Distinct street names with their LOCATION counts, sorted alphabetically by
+ * name. Drives the street filter dropdown. A location is counted under each of
+ * its street names (corner locations have two); locations missing a street are
+ * bucketed under "Unknown".
+ */
+export function streetCounts(locations: WaterLocation[]): NamedCount[] {
+  const m = new Map<string, number>();
+  for (const loc of locations) {
+    const names =
+      loc.streetNames && loc.streetNames.length
+        ? loc.streetNames
+        : [loc.streetName ?? "Unknown"];
+    for (const s of names) {
+      const key = s || "Unknown";
+      m.set(key, (m.get(key) ?? 0) + 1);
+    }
+  }
+  return [...m.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }

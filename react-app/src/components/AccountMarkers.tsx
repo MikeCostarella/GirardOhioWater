@@ -10,21 +10,32 @@ interface AccountMarkersProps {
   locations?: WaterLocation[];
   onSelect?: (loc: WaterLocation) => void;
   /**
-   * Set of jurisdiction names to show. If undefined, all locations show
-   * (jurisdiction data not present / filter inactive).
+   * Set of jurisdiction names to show. If undefined, jurisdiction is not
+   * filtered.
    */
   selectedJurisdictions?: Set<string>;
+  /**
+   * Set of street names to show. If undefined, street is not filtered. A
+   * location matches if ANY of its street names is selected.
+   */
+  selectedStreets?: Set<string>;
 }
 
 function isOutside(loc: WaterLocation): boolean {
   return !!loc.jurisdiction && loc.jurisdiction !== HOME_JURISDICTION;
 }
 
+/** Street names for a location (handles the ~18 corner locations with two). */
+function streetsOf(loc: WaterLocation): string[] {
+  if (loc.streetNames && loc.streetNames.length) return loc.streetNames;
+  return [loc.streetName ?? "Unknown"];
+}
+
 /**
  * One CircleMarker per location, colored + sized by account count, grouped into
- * a MarkerClusterGroup. Out-of-city locations get a magenta ring. When a
- * jurisdiction selection is supplied, only locations in selected jurisdictions
- * render (a location's bucket is its jurisdiction, or "Unassigned").
+ * a MarkerClusterGroup. Out-of-city locations get a magenta ring. Locations are
+ * filtered by jurisdiction and/or street when those selections are supplied
+ * (both applied together — AND).
  *
  * Wrapped in React.memo: rebuilding ~5,568 markers + the cluster tree is
  * expensive, so this must NOT re-render when unrelated app state (e.g. the
@@ -34,12 +45,23 @@ function AccountMarkers({
   locations = [],
   onSelect,
   selectedJurisdictions,
+  selectedStreets,
 }: AccountMarkersProps) {
-  const shown = selectedJurisdictions
-    ? locations.filter((loc) =>
-        selectedJurisdictions.has(loc.jurisdiction ?? "Unassigned"),
-      )
-    : locations;
+  const shown = locations.filter((loc) => {
+    if (
+      selectedJurisdictions &&
+      !selectedJurisdictions.has(loc.jurisdiction ?? "Unassigned")
+    ) {
+      return false;
+    }
+    if (
+      selectedStreets &&
+      !streetsOf(loc).some((s) => selectedStreets.has(s))
+    ) {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <MarkerClusterGroup
