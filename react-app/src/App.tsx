@@ -128,7 +128,8 @@ export default function App() {
             </div>
             {hasJurisdictions && (
               <div className="stat">
-                Outside Girard limits:{" "}
+                <span className="label-full">Outside Girard limits:</span>
+                <span className="label-short">Outside Girard:</span>{" "}
                 <b style={{ color: "#E040FB" }}>
                   {outsideCount.toLocaleString()}
                 </b>

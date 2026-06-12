@@ -59,6 +59,8 @@ body {
 }
 #stats-bar .stat { display: flex; align-items: center; gap: 6px; }
 #stats-bar .stat b { color: var(--text-accent); }
+/* Full label by default (desktop); the short variant shows only on mobile. */
+#stats-bar .label-short { display: none; }
 /* Pipe divider before each stat except the first (replaces the old inline |). */
 #stats-bar .stat + .stat::before {
   content: "|";
@@ -471,6 +473,9 @@ body {
   /* Drop the pipe dividers on mobile — wrapped stats shouldn't show a leading
      "|"; the row gap separates them instead. */
   #stats-bar .stat + .stat::before { content: none; }
+  /* Use the shorter "Outside Girard:" label on mobile to fit on one line. */
+  #stats-bar .label-full { display: none; }
+  #stats-bar .label-short { display: inline; }
 
   /* Search bar: wrap controls onto multiple rows */
   #search-bar {
